@@ -20,3 +20,9 @@ Machine Learning Model:
   local: Keras, Tensorflow -- 4 convolutional layers
   
   cloud: AutoML API
+
+
+# How to run:
+Local: run game.py on your local machine with python 3.7 and required libraries
+
+Cloud: use the link
