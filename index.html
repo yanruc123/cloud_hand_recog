@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <script src="https://unpkg.com/@tensorflow/tfjs"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-automl"></script>
+    <meta charset="utf-8">
+</head>
+
+<body>
+
+    <video autoplay playsinline muted id="webcam" width="224" height="224">
+    </video>
+    <div id="result"></div>
+
+    <button type="button" id="sp" onclick="startPlaying()"> Start Playing </button>
+    <h3>try to put only your hand in front of camera</h3>
+    <h3> each game will have ~3 second delay</h3>
+
+    <div id="info">
+        <p> The game will begin in <span id="countdowntimer">3 </span> Seconds</p>
+
+        computer 1: <span id="computer1"></span><br>
+        user 1: <span id="user1"></span><br><br>
+
+        computer 2: <span id="computer2"></span><br>
+        user 2: <span id="user2"></span><br><br>
+
+        computer 3: <span id="computer3"></span><br>
+        user 3: <span id="user3"></span><br><br>
+
+        win: <span id="win"></span> <br>
+        score: <span id="score"></span>
+    </div>
+
+</body>
+
+
+<script type="text/javascript">
+    //judge function
+    function judge(u, c) {
+        if (u === "Rock") {
+            if (c === "Scissor") {
+                return "user win";
+            }
+            else if (c === "Rock") {
+                return "draw";
+            }
+            else if (c === "Paper") {
+                return "computer win";
+            }
+        }
+        else if (u === "Scissor") {
+            if (c === "Scissor") {
+                return "draw";
+            }
+            else if (c === "Rock") {
+                return "computer win";
+            }
+            else if (c === "Paper") {
+                return "user win";
+            }
+        }
+        else if (u === "Paper") {
+            if (c === "Scissor") {
+                return "computer win";
+            }
+            else if (c === "Rock") {
+                return "user win";
+            }
+            else if (c === "Paper") {
+                return "draw";
+            }
+        }
+    }
+
+    function prepImg(pth) {
+        return cv.resize(pth, (150, 150)).reshape(1, 150, 150, 3);
+    }
+
+    function winner(c, p) {
+        var win;
+        if (c > p) {
+            win = "Computer";
+        }
+        else if (c < p) {
+            win = "Player";
+        }
+        else {
+            win = "Draw";
+        }
+        return win;
+    }
+
+    function findBest(result) {
+        var rp = result[0].prob;
+        var pp = result[1].prob;
+        var sp = result[2].prob;
+
+        var max_var = "Rock";
+        var max = rp;
+
+        if (pp > max) {
+            max_var = "Paper";
+            max = pp;
+        }
+        if (sp > max) {
+            max_var = "Scissor";
+        }
+        return max_var;
+    }
+
+    async function sleep(ms) {
+        // return await for better async stack trace support in case of errors.
+        return await new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function startPlaying() {
+        //set game constant
+        compScore = 0;
+        playerScore = 0;
+        let net;
+
+        const webcamElement = await document.getElementById('webcam');
+
+        for (var i = 1; i < 4; i++) {
+            await sleep(3000);
+
+            //game 1
+            console.log('Loading model..');
+            net = await tf.automl.loadImageClassification('model.json');
+            console.log('Successfully loaded model');
+
+            const cam = await tf.data.webcam(webcamElement);
+            var img = await cam.capture();
+            var pred = await net.classify(img);
+            console.log("result = ", pred);
+            if (pred != undefined) {
+                var pred = findBest(pred);
+            }
+
+            document.getElementById("user" + String(i)).textContent = "User result = " + pred;
+
+            var computer_choice = await ["Rock", "Paper", "Scissor"];
+            var computer_give = await computer_choice[Math.floor(Math.random() * computer_choice.length)];
+            await console.log("computer_give = ", computer_give);
+            document.getElementById("computer" + String(i)).textContent = await "Computer result = " + computer_give;
+
+            //judge
+            var result = judge(pred, computer_give);
+            console.log("result = ", result);
+
+            if (result == "computer win") {
+                compScore++;
+            }
+            else if (result == "user win") {
+                playerScore++;
+            }
+        }
+
+        document.getElementById("win").textContent = winner(compScore, playerScore);
+        document.getElementById("score").textContent = "Player = " + String(playerScore) + "User = " + String(compScore);
+
+        img.dispose();
+        tf.nextFrame();
+    }
+
+
+
+</script>
+
+<style>
+    #container {
+        margin: 0px auto;
+        width: 500px;
+        height: 375px;
+        border: 10px #333 solid;
+    }
+
+    #videoElement {
+        width: 500px;
+        height: 375px;
+        background-color: #666;
+    }
+</style>
+
+</html>
