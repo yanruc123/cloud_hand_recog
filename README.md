@@ -1,28 +1,31 @@
-# cloud_hand_recog
+# Cloud Hand Recognition Project
 
---used machine learning (TensorFlow, AutoML API) to learn gestures and make predictions with almost 100% accuracy 
+This project is a full-stack, machine learning-powered game deployed on Google Cloud with Kubernetes, using Locust for traffic testing. The game utilizes both non-machine learning and machine learning methods for hand gesture recognition, implemented with OpenCV and TensorFlow.
 
---used Google Cloud to deploy the website
+## Overview
 
---used kubernetes and locust for load testing
+The project involves the use of Python, TensorFlow, AutoML API, OpenCV, Google Cloud, Kubernetes, and Locust. The machine learning model is trained to learn gestures and make predictions with almost 100% accuracy. The project includes both local and cloud deployment.
 
+## Features
 
-see deployment: https://cloud-hand-recog-285002.uc.r.appspot.com/
+1. **Hand Gesture Recognition**: Implemented and compared non-ML computer vision methods and ML methods for hand gesture recognition, resulting in a 5% improvement in prediction accuracy.
 
-This repo includes both local deployment and cloud deployment:
+2. **Machine Learning Model**: The local model uses Keras and TensorFlow with 4 convolutional layers, while the cloud model uses AutoML API.
 
-Local deployment: use OpenCV library for image processing
+3. **Deployment**: The game is deployed both locally and on the cloud. The local deployment uses the OpenCV library for image processing, while the cloud deployment uses Google Cloud as the deployment platform and locust/kubernetes for load testing.
 
-Cloud deployment: use Google Cloud for deployment platform and locust/kubernetes for load testing
+## Running the Project
 
-Machine Learning Model: 
-  
-  local: Keras, Tensorflow -- 4 convolutional layers
-  
-  cloud: AutoML API
+For local deployment, run `game.py` on your local machine with Python 3.7 and the required libraries. For cloud deployment, use [this link](https://cloud-hand-recog-285002.uc.r.appspot.com/).
 
+## Recognition
 
-# How to run:
-Local: run game.py on your local machine with python 3.7 and required libraries
+The project's abstract was accepted by the 2020 3rd International Conference on Virtual Reality Technology.
 
-Cloud: use the link
+## Contributing
+
+Contributions are welcome. Please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License.
